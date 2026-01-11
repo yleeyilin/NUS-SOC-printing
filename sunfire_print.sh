@@ -16,16 +16,15 @@ if [ $# -lt 1 ]; then
 fi
 
 PDF_FILE="$1"
-
-echo "Connecting via ssh..."
-ssh "${USER}@${HOST}" exit
+BASENAME=$(basename "$PDF_FILE")
 
 if [ -n "$PDF_FILE" ]; then
     echo "Copying ${PDF_FILE}..."
     scp "$PDF_FILE" "${USER}@${HOST}:${HOME_DIR}/"
 fi
 
-echo "Sending job to printer ${PRINTER}..."
-lpr -P"$PRINTER" "$PDF_FILE"
+echo "Sending job to printer ${PRINTER} via ssh..."
+ssh "${USER}@${HOST}" \
+  "lpr -P${PRINTER} ${HOME_DIR}/${BASENAME}"
 
 echo "Done."
